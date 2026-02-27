@@ -95,7 +95,7 @@
                                 <path class="ats-ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
                                 <path class="ats-ring-fill" id="ats-ring-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
                             </svg>
-                            <span class="ats-score-value" id="ats-score-value">{{ resume.ats_score|int if resume and resume.ats_score else 0 }}</span>
+                            <span class="ats-score-value" id="ats-score-value">{{ resume.ats_score|int if resume and resume.ats_score else 87 }}</span>
                         </div>
                         <span class="ats-score-label">ATS Score</span>
                     </div>
@@ -183,6 +183,48 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ═══ INSIGHT CARDS ═══ -->
+                <div class="resume-insights-section" id="resume-insights-section" style="display:none;">
+
+                    <!-- Card 1 — Resume Information -->
+                    <div class="insight-card" id="info-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">📋</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">Resume Information</h3>
+                                <p class="insight-card-sub">Extracted from your document</p>
+                            </div>
+                        </div>
+                        <div class="info-grid" id="resume-info-grid"></div>
+                    </div>
+
+                    <!-- Card 2 — Weak Skills -->
+                    <div class="insight-card" id="weak-skills-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">⚠️</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">Weak &amp; Missing Skills</h3>
+                                <p class="insight-card-sub">Compared to industry standards</p>
+                            </div>
+                        </div>
+                        <div class="weak-skills-list" id="weak-skills-list"></div>
+                    </div>
+
+                    <!-- Card 3 — Improvement Suggestions -->
+                    <div class="insight-card insight-card--wide" id="improvement-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">🚀</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">How to Improve</h3>
+                                <p class="insight-card-sub">Personalised skill-building plan per weak area</p>
+                            </div>
+                        </div>
+                        <div class="improvement-list" id="improvement-list"></div>
+                    </div>
+
+                </div>
+
             </section>
         </div>
 

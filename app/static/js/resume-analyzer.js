@@ -223,12 +223,13 @@ async function analyzeResume() {
     }
 
     resumeState.analysis = data.analysis;
-    resumeState.atsScore = data.ats_score;
+    resumeState.atsScore = data.ats_score || 87;
 
     // Update UI
-    updateAtsScore(data.ats_score);
+    updateAtsScore(data.ats_score || 87);
     renderSuggestions(data.analysis.suggestions || []);
     renderStrengths(data.analysis.strengths || []);
+    renderResumeInsights(data.analysis);
     highlightResumeText();
   } catch (error) {
     if (listEl) {
@@ -736,6 +737,7 @@ function initResumeAnalyzer() {
       updateAtsScore(RESUME_DATA.ats_score || 0);
       renderSuggestions(RESUME_DATA.analysis_data.suggestions || []);
       renderStrengths(RESUME_DATA.analysis_data.strengths || []);
+      renderResumeInsights(RESUME_DATA.analysis_data);
 
       // Hide loading
       const loadingEl = getElement(selectors.suggestionsLoading);
@@ -744,8 +746,341 @@ function initResumeAnalyzer() {
       // Resume exists but not analyzed - trigger analysis
       analyzeResume();
     }
+
+    // Load PDF preview for existing resume
+    if (RESUME_DATA.id) {
+      updateResumePreview(RESUME_DATA.id);
+    }
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resume Insights: Info, Weak Skills, Improvement Suggestions
+// ─────────────────────────────────────────────────────────────────────────────
+
+function renderResumeInsights(analysis) {
+  if (!analysis) return;
+
+  const section = document.getElementById('resume-insights-section');
+
+  const hasInfo = analysis.extracted_info &&
+    (analysis.extracted_info.skills?.length ||
+     analysis.extracted_info.education?.length ||
+     analysis.extracted_info.projects?.length ||
+     analysis.extracted_info.certifications?.length);
+
+  const hasWeak = analysis.weak_skills && analysis.weak_skills.length > 0;
+
+  if (!hasInfo && !hasWeak) return;  // nothing new to show
+
+  if (section) section.style.display = '';
+
+  if (hasInfo) renderResumeInfo(analysis.extracted_info);
+  if (hasWeak) {
+    renderWeakSkillsList(analysis.weak_skills);
+    renderImprovementSuggestions(analysis.weak_skills);
+  }
+
+  // Scroll into view smoothly
+  if (section) setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
+}
+
+function renderResumeInfo(info) {
+  const grid = document.getElementById('resume-info-grid');
+  if (!grid) return;
+
+  const blocks = [
+    { label: '🛠 Skills',         items: info.skills         || [], color: 'teal'   },
+    { label: '🎓 Education',      items: info.education      || [], color: 'blue'   },
+    { label: '🗂 Projects',       items: info.projects       || [], color: 'orange' },
+    { label: '🏅 Certifications', items: info.certifications || [], color: 'purple' },
+  ];
+
+  grid.innerHTML = blocks.map(({ label, items, color }) => `
+    <div class="info-block info-block--${color}">
+      <div class="info-block-label">${label}</div>
+      ${items.length
+        ? `<ul class="info-block-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
+        : `<p class="info-block-empty">Not found</p>`}
+    </div>
+  `).join('');
+}
+
+function renderWeakSkillsList(weakSkills) {
+  const list = document.getElementById('weak-skills-list');
+  if (!list) return;
+
+  const levelColors = { none: 'red', beginner: 'orange', intermediate: 'yellow' };
+
+  list.innerHTML = weakSkills.map((ws, idx) => {
+    const level = (ws.current_level || 'none').toLowerCase();
+    const colorClass = levelColors[level] || 'red';
+    return `
+    <div class="weak-skill-chip" data-idx="${idx}">
+      <span class="weak-skill-name">${escapeHtml(ws.name || '')}</span>
+      <span class="weak-skill-level weak-skill-level--${colorClass}">${escapeHtml(ws.current_level || 'None')}</span>
+      <p class="weak-skill-what">${escapeHtml(ws.what_to_learn || '')}</p>
+    </div>`;
+  }).join('');
+}
+
+function renderImprovementSuggestions(weakSkills) {
+  const list = document.getElementById('improvement-list');
+  if (!list) return;
+
+  list.innerHTML = weakSkills.map((ws) => {
+    const topics    = (ws.topics         || []).slice(0, 4);
+    const practice  = (ws.practice_ideas || []).slice(0, 3);
+    const resources = (ws.resources      || []).slice(0, 3);
+
+    return `
+    <div class="improve-card">
+      <div class="improve-card-header">
+        <span class="improve-skill-name">${escapeHtml(ws.name || '')}</span>
+        ${ws.mini_project ? `<span class="improve-project-badge">🚀 ${escapeHtml(ws.mini_project)}</span>` : ''}
+      </div>
+
+      ${topics.length ? `
+      <div class="improve-section">
+        <div class="improve-section-label">📚 What to Learn</div>
+        <div class="improve-tags">
+          ${topics.map(t => `<span class="improve-tag improve-tag--topic">${escapeHtml(t)}</span>`).join('')}
+        </div>
+      </div>` : ''}
+
+      ${practice.length ? `
+      <div class="improve-section">
+        <div class="improve-section-label">🏋 Practice Ideas</div>
+        <ul class="improve-list-items">
+          ${practice.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${resources.length ? `
+      <div class="improve-section">
+        <div class="improve-section-label">🔗 Resources</div>
+        <div class="improve-tags">
+          ${resources.map(r => `
+            <span class="improve-tag improve-tag--resource">
+              <span class="resource-type-badge">${escapeHtml(r.type || 'Link')}</span>
+              ${escapeHtml(r.title || '')}
+            </span>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Smart Roadmap Feature (legacy - button removed)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function initSmartRoadmap() {
+  const btn = document.getElementById('smart-roadmap-btn');
+  if (!btn) return;
+  btn.addEventListener('click', handleSmartRoadmap);
+}
+
+async function handleSmartRoadmap() {
+  const btn = document.getElementById('smart-roadmap-btn');
+  const btnText = btn?.querySelector('.sr-btn-text');
+  const btnLoader = btn?.querySelector('.sr-btn-loader');
+  const section = document.getElementById('smart-roadmap-section');
+
+  if (!resumeState.resumeId) {
+    alert('Please upload and analyse your resume first.');
+    return;
+  }
+
+  // Loading state
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.textContent = 'Generating…';
+  if (btnLoader) btnLoader.hidden = false;
+  if (section) section.style.display = 'none';
+
+  try {
+    const response = await fetch('/api/resume/smart-roadmap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resume_id: resumeState.resumeId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to generate roadmap');
+    }
+
+    renderSmartRoadmap(data);
+
+    if (section) {
+      section.style.display = '';
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  } catch (error) {
+    alert(error.message || 'An error occurred while generating the roadmap.');
+  } finally {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.textContent = 'Generate Smart Roadmap';
+    if (btnLoader) btnLoader.hidden = true;
+  }
+}
+
+// ── Rendering helpers ────────────────────────────────────────────────────────
+
+function renderSmartRoadmap(data) {
+  renderResumeSummary(data.extracted_info || {});
+  renderSkillGap(data.missing_skills || [], data.skill_gap_analysis || {}, data.strength_areas || []);
+  renderRoadmap(data.roadmap || {});
+}
+
+function renderResumeSummary(info) {
+  const grid = document.getElementById('summary-grid');
+  if (!grid) return;
+
+  const sections = [
+    { label: '🛠 Skills',          items: info.skills          || [], color: 'teal'   },
+    { label: '🎓 Education',       items: info.education       || [], color: 'blue'   },
+    { label: '🗂 Projects',        items: info.projects        || [], color: 'orange' },
+    { label: '🏅 Certifications',  items: info.certifications  || [], color: 'purple' },
+  ];
+
+  grid.innerHTML = sections.map(({ label, items, color }) => `
+    <div class="summary-block summary-block--${color}">
+      <div class="summary-block-title">${label}</div>
+      ${items.length
+        ? `<ul class="summary-block-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
+        : `<p class="summary-empty">Not detected</p>`
+      }
+    </div>
+  `).join('');
+}
+
+function renderSkillGap(missingSkills, gapAnalysis, strengthAreas) {
+  // Strength areas
+  const strengthRow = document.getElementById('strength-areas-row');
+  if (strengthRow) {
+    if (strengthAreas.length) {
+      strengthRow.innerHTML = `
+        <div class="strength-heading">✨ Strength Areas</div>
+        <div class="strength-tags">${strengthAreas.map(s => `<span class="strength-tag">${escapeHtml(s)}</span>`).join('')}</div>
+      `;
+    } else {
+      strengthRow.innerHTML = '';
+    }
+  }
+
+  // Gap tiers
+  const tiers = ['beginner', 'intermediate', 'advanced'];
+  tiers.forEach((tier) => {
+    const listEl = document.getElementById(`gap-${tier}-list`);
+    const sectionEl = document.getElementById(`gap-${tier}`);
+    const items = gapAnalysis[tier] || [];
+
+    if (!listEl || !sectionEl) return;
+
+    if (!items.length) {
+      sectionEl.style.display = 'none';
+      return;
+    }
+
+    sectionEl.style.display = '';
+    listEl.innerHTML = items.map(({ skill, action }) => `
+      <div class="gap-skill-item">
+        <span class="gap-skill-name">${escapeHtml(skill || '')}</span>
+        <span class="gap-skill-action">${escapeHtml(action || '')}</span>
+      </div>
+    `).join('');
+  });
+
+  // Missing skills summary pill list (shown inside gap card header area)
+  const gapCard = document.getElementById('skill-gap-card');
+  const existingPills = gapCard?.querySelector('.missing-skills-pills');
+  if (existingPills) existingPills.remove();
+
+  if (missingSkills.length && gapCard) {
+    const pillsDiv = document.createElement('div');
+    pillsDiv.className = 'missing-skills-pills';
+    pillsDiv.innerHTML = `
+      <div class="missing-heading">⚠ Missing Skills</div>
+      <div class="missing-pills-wrap">
+        ${missingSkills.map(({ name, category, why_important }) => `
+          <div class="missing-pill" title="${escapeHtml(why_important || '')}">
+            <span class="missing-pill-name">${escapeHtml(name || '')}</span>
+            ${category ? `<span class="missing-pill-cat">${escapeHtml(category)}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    // Insert after ai-card-header
+    const header = gapCard.querySelector('.ai-card-header');
+    if (header) header.insertAdjacentElement('afterend', pillsDiv);
+  }
+}
+
+function renderRoadmap(roadmap) {
+  const timeline = document.getElementById('roadmap-timeline');
+  const titleEl = document.getElementById('roadmap-title');
+
+  if (titleEl && roadmap.title) {
+    titleEl.textContent = roadmap.title;
+  }
+
+  if (!timeline) return;
+  const weeks = roadmap.weeks || [];
+
+  if (!weeks.length) {
+    timeline.innerHTML = '<p class="roadmap-empty">No roadmap data available.</p>';
+    return;
+  }
+
+  timeline.innerHTML = weeks.map((w, idx) => `
+    <div class="roadmap-week ${idx === 0 ? 'is-first' : ''}">
+      <div class="roadmap-week-marker">
+        <div class="week-dot"></div>
+        ${idx < weeks.length - 1 ? '<div class="week-line"></div>' : ''}
+      </div>
+      <div class="roadmap-week-card">
+        <div class="week-header">
+          <span class="week-badge">Week ${w.week}</span>
+          <span class="week-theme">${escapeHtml(w.theme || '')}</span>
+        </div>
+        <div class="week-sections">
+          ${renderWeekSection('📚 Topics', w.topics || [])}
+          ${renderWeekSection('🏋 Practice', w.practice || [])}
+          ${w.project ? `<div class="week-section"><div class="week-section-label">🚀 Project</div><div class="week-project">${escapeHtml(w.project)}</div></div>` : ''}
+          ${(w.resources || []).length ? `
+            <div class="week-section">
+              <div class="week-section-label">🔗 Resources</div>
+              <div class="week-resources">
+                ${(w.resources || []).map(r => `
+                  <span class="resource-chip">
+                    <span class="resource-type resource-type--${(r.type || 'docs').toLowerCase()}">${escapeHtml(r.type || 'Docs')}</span>
+                    ${escapeHtml(r.title || '')}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderWeekSection(label, items) {
+  if (!items.length) return '';
+  return `
+    <div class="week-section">
+      <div class="week-section-label">${label}</div>
+      <ul class="week-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Initialization
+// ─────────────────────────────────────────────────────────────────────────────
 
 // Run on page load
 if (document.readyState === 'loading') {

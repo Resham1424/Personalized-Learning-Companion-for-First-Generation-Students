@@ -40,7 +40,7 @@
                         <div class="sidebar-link-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                         </div>
-                        <span>Skill Checklist</span>
+                        <span>AI Companion</span>
                     </a>
                     <a href="{{ url_for('main.resume_page') }}" class="dash-sidebar-link" data-nav-link>
                         <div class="sidebar-link-icon">
@@ -88,11 +88,10 @@
         <div class="auth-shell">
             <section class="auth-left dashboard-intro" id="skill-checklist">
                 <p class="auth-kicker">Dashboard</p>
-                <h1 class="auth-title">Placement readiness</h1>
-                <p class="auth-lead">Track the skills that matter for placements and see how close you are to readiness.</p>
+        
             </section>
 
-            <section class="dashboard-top-row">
+            <section class="dashboard-top-row" style="display:none;">
                 <div class="dash-summary">
                     <div class="summary-header">
                         <div>
@@ -168,7 +167,7 @@
                     <div class="section-header" style="margin-bottom: 10px;">
                         <div class="pill">
                             <div class="status-dots"><span></span><span></span><span></span></div>
-                            <span>AI Prep Assistant</span>
+                            <span>AI Assistant</span>
                         </div>
                         <div class="section-title">LearnMate Chatbot</div>
                         <div class="section-sub">Ask for study tips, mock-test strategies, resume feedback, or quick explanations.</div>
