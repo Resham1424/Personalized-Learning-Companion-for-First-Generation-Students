@@ -11,7 +11,17 @@
 
     <!-- ═══ HERO SECTION ═══ -->
     <section class="hero">
-        <canvas id="spline-canvas"></canvas>
+        <!-- Spline 3D full-screen background iframe -->
+        <iframe
+            id="spline-iframe"
+            src="https://my.spline.design/unovacoin-K5NgC5nhbTeC2HMPoBNPnM39/"
+            frameborder="0"
+            scrolling="no"
+            allowfullscreen
+            title="LearnMate 3D Background">
+        </iframe>
+
+        <!-- Brand pill — top-left -->
         <div class="auth-brand brand-pill">
             <svg class="brand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -20,9 +30,12 @@
             <span>LearnMate</span>
         </div>
 
+        <!-- Centered hero content -->
         <div class="hero-content">
-            <div class="auth-buttons">
-                <a class="btn-auth btn-login" href="{{ url_for('main.login') }}">Login</a>
+            <h1 class="hero-heading">Empowering First-Generation<br><span class="hero-accent">Students to Succeed.</span></h1>
+            <p class="hero-sub" style="color: #ffffff;">We make dedication look effortless until you see the sleepless nights behind it.</p>
+            <div class="auth-buttons hero-auth-buttons">
+                <a class="btn-auth btn-login" href="{{ url_for('main.login') }}">Sign In</a>
                 <a class="btn-auth btn-register" href="{{ url_for('main.register') }}">Register</a>
             </div>
             <div class="hero-scroll-hint">
@@ -41,8 +54,8 @@
     <section class="landing-section about-section">
         <div class="section-inner">
             <p class="section-kicker">What is LearnMate?</p>
-            <h2 class="section-heading">The All-in-One Placement Companion</h2>
-            <p class="section-desc">LearnMate is an AI-driven platform designed for students preparing for campus placements. It brings together intelligent tools — from AI chatbots and resume analyzers to skill trackers and mock tests — so you can focus on what matters: getting placed.</p>
+            <h2 class="section-heading">The All-in-One Personalized learning Companion</h2>
+            <p class="section-desc">LearnMate supports first-generation students with personalized learning guidance. It brings together intelligent tools — from AI chatbots and resume analyzers to skill trackers and mock tests — so you can focus on what matters: getting placed.</p>
             <div class="about-stats">
                 <div class="about-stat">
                     <span class="about-stat-value">6+</span>
@@ -64,7 +77,7 @@
     <section class="landing-section features-section">
         <div class="section-inner">
             <p class="section-kicker">Features</p>
-            <h2 class="section-heading">Everything You Need to Ace Placements</h2>
+            <h2 class="section-heading">Everything You Need to Succeed in Your Learning Journey</h2>
             <div class="features-grid">
 
                 <div class="feature-card">
@@ -149,7 +162,7 @@
     <!-- ═══ CTA SECTION ═══ -->
     <section class="landing-section cta-section">
         <div class="section-inner cta-inner">
-            <h2 class="cta-heading">Ready to Start Your Placement Journey?</h2>
+            <h2 class="cta-heading">Ready to Start Your Learning Journey?</h2>
             <p class="cta-sub">Join LearnMate today and let AI accelerate your preparation.</p>
             <div class="auth-buttons cta-buttons">
                 <a class="btn-auth btn-register" href="{{ url_for('main.register') }}">Get Started Free</a>
