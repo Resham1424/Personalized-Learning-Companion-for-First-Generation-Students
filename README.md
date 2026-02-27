@@ -14,7 +14,6 @@ Built for students who lack traditional mentorship, LearnMate acts as an always-
 - **Personalized Roadmap Generator** — Auto-generates a week-by-week learning plan with topics, practice ideas, mini projects, and resources.
 - **Habit Tracker** — Build daily study habits with a visual streak and completion tracker for consistency.
 - **Learning Progress Dashboard** — View learning readiness score, leaderboard standings, and overall progress.
-- **First-Time Onboarding** — Guided self-assessment to personalize the dashboard experience from day one.
 - **Admin Panel** — Full admin interface with user management, database explorer, and analytics.
 - **Auth System** — Registration, login, password reset via email with secure token links.
 
