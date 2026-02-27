@@ -3,6 +3,10 @@ import os
 from datetime import datetime
 from flask import Flask
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 from .db import init_db
 
@@ -67,7 +71,11 @@ def create_app():
     app.config["SMTP_USER"] = os.getenv("SMTP_USER", "")
     app.config["SMTP_PASSWORD"] = os.getenv("SMTP_PASSWORD", "")
     app.config["SMTP_USE_TLS"] = os.getenv("SMTP_USE_TLS", "true").lower() in ("1", "true", "yes")
-    app.config["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY", "")
+    
+    # Get Groq API key - explicitly from .env
+    groq_key = os.getenv("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
+    app.config["GROQ_API_KEY"] = groq_key
+    print(f"*** GROQ_API_KEY loaded: {('Yes - ' + str(len(groq_key)) + ' chars') if groq_key else 'No'} ***", flush=True)
 
     init_db(app)
 
