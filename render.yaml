@@ -2,7 +2,7 @@ services:
   - type: web
     name: learnmate
     env: python
-    plan: free
+    plan: starter
     numInstances: 1
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
@@ -25,7 +25,7 @@ services:
         sync: false
       - key: SMTP_USE_TLS
         value: "true"
-    disks:
-      - name: learnmate-data
-        mountPath: /var/data
-        sizeGB: 1
+    disk:
+      name: learnmate-data
+      mountPath: /var/data
+      sizeGB: 1
