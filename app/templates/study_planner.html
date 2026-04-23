@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Planner - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/study-planner.css') }}">
+</head>
+<body class="page-fade page-fade-ready dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+
+        {# Include shared sidebar component #}
+        {% set active_page = 'study_planner' %}
+        {% include '_sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="auth-shell">
+            <!-- Header -->
+            <section class="planner-header">
+                <div>
+                    <p class="auth-kicker">Smart Study Scheduler</p>
+                    <h1 class="auth-title">Study Planner</h1>
+                    <p class="auth-lead">AI-powered scheduling that adapts to your performance and prevents burnout.</p>
+                </div>
+                <div class="readiness-card" id="readinessCard">
+                    <div class="readiness-emoji" id="readinessEmoji">🌱</div>
+                    <div class="readiness-score" id="readinessScore">0%</div>
+                    <div class="readiness-level" id="readinessLevel">Getting Started</div>
+                </div>
+            </section>
+
+            <!-- Progress Bar (visible once schedule exists) -->
+            <section class="progress-overview glass-card-mini" id="progressOverview" style="display:none;">
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="statDaysRemaining">—</span>
+                        <span class="stat-label">Days Left</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statTasksDone">0</span>
+                        <span class="stat-label">Tasks Done</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statTotalTasks">0</span>
+                        <span class="stat-label">Total Tasks</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statHoursStudied">0</span>
+                        <span class="stat-label">Hrs Studied</span>
+                    </div>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+                    </div>
+                    <span class="progress-pct" id="progressPct">0%</span>
+                </div>
+            </section>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="calendar" id="calendarViewBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Calendar
+                </button>
+                <button class="view-btn" data-view="setup" id="setupViewBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.2 4.2l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.2-4.2l4.2-4.2"/></svg>
+                    Setup &amp; Subjects
+                </button>
+            </div>
+
+            <!-- ═══ Calendar View ═══ -->
+            <div class="view-content active" id="calendarView">
+                <!-- Suggestions Banner -->
+                <div class="suggestions-banner" id="suggestionsBanner" style="display:none;">
+                    <div class="suggestions-icon">💡</div>
+                    <div class="suggestions-content" id="suggestionsContent"></div>
+                </div>
+
+                <!-- Monthly Calendar -->
+                <div class="monthly-calendar glass-card" id="monthlyCalendar">
+                    <div class="calendar-header">
+                        <button class="cal-nav-btn" id="prevMonthBtn" title="Previous month">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <h2 id="calMonthLabel">—</h2>
+                        <button class="cal-nav-btn" id="nextMonthBtn" title="Next month">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+
+                        <button class="btn-generate" id="generateBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                            Generate Full Schedule
+                        </button>
+                    </div>
+
+                    <!-- Day-of-week labels -->
+                    <div class="cal-dow-row">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+
+                    <!-- Calendar grid (filled by JS) -->
+                    <div class="cal-grid" id="calGrid">
+                        <div class="empty-state">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <p>No schedule generated yet</p>
+                            <button class="btn-setup" id="setupPromptBtn">Configure Planner →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day detail panel (shown when clicking a date) -->
+                <div class="day-detail glass-card" id="dayDetail" style="display:none;">
+                    <div class="day-detail-header">
+                        <h3 id="dayDetailTitle">—</h3>
+                        <button class="close-detail" id="closeDayDetail">&times;</button>
+                    </div>
+                    <div class="day-detail-tasks" id="dayDetailTasks"></div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="performance-section glass-card">
+                    <h3>Performance Insights</h3>
+                    <div class="performance-grid" id="performanceGrid">
+                        <p class="text-dim">Complete tasks to see insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Setup View ═══ -->
+            <div class="view-content" id="setupView">
+                <!-- Configuration Form -->
+                <div class="setup-card glass-card">
+                    <h2>Study Configuration</h2>
+                    <form id="configForm" class="config-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Daily Study Hours</label>
+                                <input type="number" name="daily_hours" min="1" max="6" step="0.5" value="3" class="form-input">
+                                <span class="form-hint">Recommended: 2-4 hours/day</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preparation Level</label>
+                                <select name="preparation_level" class="form-input">
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>College Start Time</label>
+                                <input type="time" name="college_start" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label>College End Time</label>
+                                <input type="time" name="college_end" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Work Start Time (Optional)</label>
+                                <input type="time" name="work_start" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Work End Time (Optional)</label>
+                                <input type="time" name="work_end" class="form-input">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Target Placement Date</label>
+                                <input type="date" name="target_placement_date" class="form-input">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Save Configuration
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Subjects Management -->
+                <div class="subjects-card glass-card">
+                    <h2>Manage Subjects</h2>
+                    <p class="card-subtitle">Add subjects and set their priority based on your strengths</p>
+
+                    <form id="addSubjectForm" class="subject-form">
+                        <input type="text" name="subject_name" placeholder="Subject name (e.g., DSA, Aptitude)" class="form-input" required>
+                        <select name="priority" class="form-input">
+                            <option value="weak">Weak (More focus)</option>
+                            <option value="medium">Medium</option>
+                            <option value="strong">Strong (Less focus)</option>
+                        </select>
+                        <button type="submit" class="btn-add">+ Add</button>
+                    </form>
+
+                    <div class="subjects-list" id="subjectsList">
+                        <p class="text-dim">No subjects added yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/study-planner.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    <script>
+        // Mobile sidebar toggle
+        (function() {
+            const mobileToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('dashSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (mobileToggle && sidebar && overlay) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                });
+                
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                });
+                
+                const sidebarLinks = sidebar.querySelectorAll('.dash-sidebar-link, .dash-sidebar-logout');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 640) {
+                            sidebar.classList.remove('open');
+                            overlay.classList.remove('active');
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

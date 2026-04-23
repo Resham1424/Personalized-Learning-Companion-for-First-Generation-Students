@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resume.css') }}">
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+</head>
+<body class="page-fade page-fade-ready resume-page dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        
+        <!-- ═══ NAVBAR ═══ -->
+        <nav class="dash-navbar">
+            <div class="dash-navbar-inner">
+                <span class="dash-nav-brand">LearnMate</span>
+                <div class="dash-nav-links">
+                    <a href="{{ url_for('main.dashboard') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        Skill Checklist
+                    </a>
+                    <a href="{{ url_for('main.resume_page') }}" class="dash-nav-link active" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Analyze Resume
+                    </a>
+                    <a href="{{ url_for('main.progress_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14l2 2 4-4"/></svg>
+                        Progress Tracker
+                    </a>
+                    <a href="{{ url_for('main.mock_tests_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><polyline points="10,9 9,9 8,9"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Mock Test Logbook
+                    </a>
+                    <a href="{{ url_for('main.leaderboard_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        Leaderboard
+                    </a>
+                </div>
+                <a href="{{ url_for('main.logout') }}" class="dash-nav-logout" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="resume-shell">
+            <!-- Upload Section (shown when no resume) -->
+            <section class="resume-upload-section" id="upload-section" {% if resume %}style="display: none;"{% endif %}>
+                <div class="upload-card">
+                    <div class="upload-icon">📄</div>
+                    <h2 class="upload-title">Upload Your Resume</h2>
+                    <p class="upload-subtitle">Get instant ATS feedback and suggestions to improve your resume</p>
+                    
+                    <form class="upload-form" id="resume-upload-form">
+                        <div class="upload-dropzone" id="dropzone">
+                            <input type="file" id="resume-file" name="file" accept=".pdf,.doc,.docx,.txt" hidden>
+                            <div class="dropzone-content">
+                                <svg class="dropzone-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                                <p class="dropzone-text">Drag & drop your resume here</p>
+                                <p class="dropzone-hint">or click to browse</p>
+                                <p class="dropzone-formats">Supports PDF, DOC, DOCX, TXT</p>
+                            </div>
+                        </div>
+                        <div class="upload-actions">
+                            <button type="submit" class="btn-submit" id="upload-btn" disabled>
+                                <span class="btn-text">Upload & Analyze</span>
+                                <span class="btn-loader" hidden></span>
+                            </button>
+                        </div>
+                        <p class="upload-filename" id="selected-filename"></p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Analysis Section (shown after upload) -->
+            <section class="resume-analysis-section" id="analysis-section" {% if not resume %}style="display: none;"{% endif %}>
+                <div class="analysis-header">
+                    <div class="analysis-title-group">
+                        <h1 class="analysis-title">Resume Analysis</h1>
+                        <p class="analysis-filename" id="analysis-filename">{{ resume.filename if resume else '' }}</p>
+                    </div>
+                    <div class="ats-score-badge" id="ats-score-badge">
+                        <div class="ats-score-ring">
+                            <svg viewBox="0 0 36 36">
+                                <path class="ats-ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="ats-ring-fill" id="ats-ring-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="ats-score-value" id="ats-score-value">{{ resume.ats_score|int if resume and resume.ats_score else 87 }}</span>
+                        </div>
+                        <span class="ats-score-label">ATS Score</span>
+                    </div>
+                    <button class="btn-ghost btn-new-upload" id="new-upload-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        Upload New
+                    </button>
+                </div>
+
+                <div class="analysis-container">
+                    <!-- Document Preview (Left) -->
+                    <div class="resume-preview-panel" id="preview-panel">
+                        <div class="panel-header">
+                            <div class="panel-header-top">
+                                <div class="panel-title-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                </div>
+                                <h2 class="panel-title">Document Preview</h2>
+                            </div>
+                            <div class="page-navigation">
+                                <button class="page-nav-btn" id="prev-page-btn" disabled>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15 18 9 12 15 6"/>
+                                    </svg>
+                                </button>
+                                <span class="page-indicator">Page <span class="current-page" id="current-page">1</span> of <span class="total-pages" id="total-pages">1</span></span>
+                                <button class="page-nav-btn" id="next-page-btn" disabled>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="resume-preview-container" id="resume-content">
+                            {% if resume %}
+                            <div class="pdf-viewer" id="pdf-viewer">
+                                <div class="pdf-pages" id="pdf-pages"></div>
+                            </div>
+                            {% else %}
+                            <p class="preview-empty">Upload a resume to see preview</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Formatting Suggestions (Right) -->
+                    <div class="suggestions-panel" id="suggestions-panel">
+                        <div class="panel-header">
+                            <div class="panel-header-top">
+                                <div class="panel-title-icon check-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 11 12 14 22 4"/>
+                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                    </svg>
+                                </div>
+                                <h2 class="panel-title">Formatting Suggestions</h2>
+                            </div>
+                            <div class="suggestions-tabs" id="suggestions-tabs">
+                                <button class="suggestion-tab active" data-tab="overview">Overview</button>
+                                <button class="suggestion-tab" data-tab="page-1">
+                                    Page 1
+                                    <span class="tab-count" id="page-1-count">0</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="suggestions-list" id="suggestions-list">
+                            <!-- Loading state -->
+                            <div class="suggestions-loading" id="suggestions-loading">
+                                <div class="loading-spinner"></div>
+                                <p>Analyzing your resume...</p>
+                            </div>
+                            <!-- Suggestions will be injected here -->
+                        </div>
+
+                        <div class="strengths-section" id="strengths-section" hidden>
+                            <h3 class="section-subtitle">✨ Strengths</h3>
+                            <ul class="strengths-list" id="strengths-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ INSIGHT CARDS ═══ -->
+                <div class="resume-insights-section" id="resume-insights-section" style="display:none;">
+
+                    <!-- Card 1 — Resume Information -->
+                    <div class="insight-card" id="info-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">📋</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">Resume Information</h3>
+                                <p class="insight-card-sub">Extracted from your document</p>
+                            </div>
+                        </div>
+                        <div class="info-grid" id="resume-info-grid"></div>
+                    </div>
+
+                    <!-- Card 2 — Weak Skills -->
+                    <div class="insight-card" id="weak-skills-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">⚠️</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">Weak &amp; Missing Skills</h3>
+                                <p class="insight-card-sub">Compared to industry standards</p>
+                            </div>
+                        </div>
+                        <div class="weak-skills-list" id="weak-skills-list"></div>
+                    </div>
+
+                    <!-- Card 3 — Improvement Suggestions -->
+                    <div class="insight-card insight-card--wide" id="improvement-card">
+                        <div class="insight-card-header">
+                            <span class="insight-card-icon">🚀</span>
+                            <div class="insight-card-title-group">
+                                <h3 class="insight-card-title">How to Improve</h3>
+                                <p class="insight-card-sub">Personalised skill-building plan per weak area</p>
+                            </div>
+                        </div>
+                        <div class="improvement-list" id="improvement-list"></div>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script>
+        const RESUME_DATA = {{ resume | tojson if resume else 'null' }};
+    </script>
+    <script src="{{ url_for('static', filename='js/resume-analyzer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+</body>
+</html>

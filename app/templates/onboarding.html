@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="page-fade page-fade-ready">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+
+        <div class="auth-shell">
+            <section class="auth-left">
+                <p class="auth-kicker">First time here</p>
+                <h1 class="auth-title">Quick profile check</h1>
+                <p class="auth-lead">One question at a time. Stay focused.</p>
+            </section>
+
+            <section class="auth-card">
+                <div class="card-header">
+                    <p class="card-eyebrow">First login</p>
+                    <h2 class="card-title">Answer 5 quick questions</h2>
+                    <p class="card-subtitle">Your responses set your starting score.</p>
+                </div>
+
+                {% if error %}
+                <div class="form-alert error">{{ error }}</div>
+                {% endif %}
+
+                <form class="auth-form onboarding-form" method="post" action="{{ url_for('main.onboarding') }}">
+                    <div class="onboarding-progress">
+                        <span class="progress-dot is-active"></span>
+                        <span class="progress-dot"></span>
+                        <span class="progress-dot"></span>
+                        <span class="progress-dot"></span>
+                        <span class="progress-dot"></span>
+                    </div>
+
+                    <div class="onboarding-step is-active" data-step="1">
+                        <label class="step-label">Which department or stream of study you belong to?</label>
+                        <input type="hidden" id="department" name="department" required>
+                        <div class="custom-select" data-custom-select>
+                            <button type="button" class="custom-select-trigger" data-select-trigger>
+                                <span class="custom-select-value" data-select-value>Select your branch</span>
+                                <svg class="custom-select-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
+                            </button>
+                            <div class="custom-select-dropdown" data-select-dropdown>
+                                <div class="custom-select-option" data-value="CSE">
+                                    <span class="cso-icon">💻</span>
+                                    <span>Computer Science (CSE)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="ECE">
+                                    <span class="cso-icon">📡</span>
+                                    <span>Electronics & Communication (ECE)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="EEE">
+                                    <span class="cso-icon">⚡</span>
+                                    <span>Electrical & Electronics (EEE)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="ME">
+                                    <span class="cso-icon">⚙️</span>
+                                    <span>Mechanical (ME)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="CE">
+                                    <span class="cso-icon">🏗️</span>
+                                    <span>Civil (CE)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="IT">
+                                    <span class="cso-icon">🌐</span>
+                                    <span>Information Technology (IT)</span>
+                                </div>
+                                <div class="custom-select-option" data-value="AI-DS">
+                                    <span class="cso-icon">📊</span>
+                                    <span>AI & Data Science</span>
+                                </div>
+                                <div class="custom-select-option" data-value="AI-ML">
+                                    <span class="cso-icon">🤖</span>
+                                    <span>AI & Machine Learning</span>
+                                </div>
+                                <div class="custom-select-option" data-value="CSBS">
+                                    <span class="cso-icon">📈</span>
+                                    <span>CSBS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-step" data-step="2">
+                        <label class="step-label" for="problem_solving">How good are you in problem solving depth? (out of 10)</label>
+                        <div class="range-wrap">
+                            <input type="range" id="problem_solving" name="problem_solving" min="1" max="10" value="5" class="range-input" data-output="problem-solv-value">
+                            <span class="range-value" id="problem-solv-value">5</span>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-step" data-step="3">
+                        <label class="step-label">Is your resume ready?</label>
+                        <div class="choice-group">
+                            <label class="choice-pill">
+                                <input type="radio" name="resume_ready" value="yes" required>
+                                <span>Yes</span>
+                            </label>
+                            <label class="choice-pill">
+                                <input type="radio" name="resume_ready" value="no" required>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-step" data-step="4">
+                        <label class="step-label">Are you ready for an interview?</label>
+                        <div class="choice-group">
+                            <label class="choice-pill">
+                                <input type="radio" name="interview_ready" value="yes" required>
+                                <span>Yes</span>
+                            </label>
+                            <label class="choice-pill">
+                                <input type="radio" name="interview_ready" value="no" required>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-step" data-step="5">
+                        <label class="step-label" for="consistency">How good are you with consistency and discipline? (out of 10)</label>
+                        <div class="range-wrap">
+                            <input type="range" id="consistency" name="consistency" min="1" max="10" value="6" class="range-input" data-output="consistency-value">
+                            <span class="range-value" id="consistency-value">6</span>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-actions">
+                        <button type="button" class="btn-ghost" data-action="prev">Back</button>
+                        <button type="button" class="btn-submit" data-action="next">Next</button>
+                        <button type="submit" class="btn-submit" data-action="submit">Finish</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    <script>
+        const steps = Array.from(document.querySelectorAll('.onboarding-step'));
+        const progressDots = Array.from(document.querySelectorAll('.progress-dot'));
+        const nextButton = document.querySelector('[data-action="next"]');
+        const prevButton = document.querySelector('[data-action="prev"]');
+        const submitButton = document.querySelector('[data-action="submit"]');
+
+        const updateRange = (event) => {
+            const outputId = event.target.getAttribute('data-output');
+            const output = document.getElementById(outputId);
+            if (output) {
+                output.textContent = event.target.value;
+            }
+        };
+
+        document.querySelectorAll('.range-input').forEach((input) => {
+            input.addEventListener('input', updateRange);
+        });
+
+        let activeIndex = 0;
+
+        const setActiveStep = (index) => {
+            steps.forEach((step, i) => step.classList.toggle('is-active', i === index));
+            progressDots.forEach((dot, i) => dot.classList.toggle('is-active', i <= index));
+            prevButton.style.visibility = index === 0 ? 'hidden' : 'visible';
+            nextButton.style.display = index === steps.length - 1 ? 'none' : 'inline-flex';
+            submitButton.style.display = index === steps.length - 1 ? 'inline-flex' : 'none';
+        };
+
+        const validateStep = () => {
+            const activeStep = steps[activeIndex];
+            const inputs = Array.from(activeStep.querySelectorAll('input, select'));
+            return inputs.every((input) => {
+                if (input.type === 'radio') {
+                    const group = activeStep.querySelectorAll(`input[name="${input.name}"]`);
+                    return Array.from(group).some((radio) => radio.checked);
+                }
+                if (input.tagName.toLowerCase() === 'select') {
+                    return Boolean(input.value);
+                }
+                return Boolean(input.value);
+            });
+        };
+
+        nextButton.addEventListener('click', () => {
+            if (!validateStep()) {
+                return;
+            }
+            activeIndex = Math.min(activeIndex + 1, steps.length - 1);
+            setActiveStep(activeIndex);
+        });
+
+        prevButton.addEventListener('click', () => {
+            activeIndex = Math.max(activeIndex - 1, 0);
+            setActiveStep(activeIndex);
+        });
+
+        setActiveStep(activeIndex);
+
+        // ═══ Custom Select Dropdown ═══
+        const customSelect = document.querySelector('[data-custom-select]');
+        const trigger = customSelect.querySelector('[data-select-trigger]');
+        const valueDisplay = customSelect.querySelector('[data-select-value]');
+        const dropdown = customSelect.querySelector('[data-select-dropdown]');
+        const hiddenInput = document.getElementById('department');
+        const options = customSelect.querySelectorAll('.custom-select-option');
+
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            customSelect.classList.toggle('is-open');
+        });
+
+        options.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.dataset.value;
+                const label = opt.querySelector('span:last-child').textContent;
+                hiddenInput.value = val;
+                valueDisplay.textContent = label;
+                customSelect.classList.add('has-value');
+                customSelect.classList.remove('is-open');
+                options.forEach(o => o.classList.remove('is-selected'));
+                opt.classList.add('is-selected');
+            });
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!customSelect.contains(e.target)) {
+                customSelect.classList.remove('is-open');
+            }
+        });
+    </script>
+</body>
+</html>

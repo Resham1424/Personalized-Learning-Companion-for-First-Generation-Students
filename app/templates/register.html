@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="page-fade page-fade-ready">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+        <a href="{{ url_for('main.home') }}" class="btn-home">&#8592; Home</a>
+
+        <div class="auth-shell">
+            <section class="auth-left">
+                <p class="auth-kicker">Start strong</p>
+                <h1 class="auth-title">Breaking Barriers. Building Careers.</h1>
+                <p class="auth-lead">Join a focused, high-signal prep routine designed to keep your momentum alive.</p>
+                <div class="auth-metrics">
+                    <div class="metric">
+                        <span class="metric-value">30 days</span>
+                        <span class="metric-label">guided roadmap</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">24/7</span>
+                        <span class="metric-label">smart tracking</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="auth-card">
+                <div class="card-header">
+                    <p class="card-eyebrow">Get started</p>
+                    <h2 class="card-title">Create account</h2>
+                    <p class="card-subtitle">Set up your LearnMate profile.</p>
+                </div>
+
+                {% if error %}
+                <div class="form-alert error">{{ error }}</div>
+                {% endif %}
+                {% if success %}
+                <div class="form-alert success">{{ success }}</div>
+                {% endif %}
+
+                <form class="auth-form" id="registerForm" method="post" action="{{ url_for('main.register') }}">
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+
+                    <label class="checkbox-label checkbox-terms">
+                        <input type="checkbox" name="terms" required>
+                        <span>I agree to the Terms & Conditions</span>
+                    </label>
+
+                    <button type="submit" class="btn-submit">Create Account</button>
+                </form>
+
+                <p class="auth-switch">Already have an account? <a href="{{ url_for('main.login') }}">Login</a></p>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+</body>
+</html>

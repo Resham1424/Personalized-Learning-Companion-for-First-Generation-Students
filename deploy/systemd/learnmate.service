@@ -1,0 +1,16 @@
+[Unit]
+Description=LearnMate Flask App
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/learnmate
+EnvironmentFile=/var/www/learnmate/.env
+ExecStart=/var/www/learnmate/.venv/bin/gunicorn run:app --workers 2 --bind 127.0.0.1:8000
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

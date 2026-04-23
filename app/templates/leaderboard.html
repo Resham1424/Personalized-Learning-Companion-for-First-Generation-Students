@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+</head>
+<body class="page-fade page-fade-ready dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+
+        <!-- ═══ NAVBAR ═══ -->
+        <nav class="dash-navbar">
+            <div class="dash-navbar-inner">
+                <span class="dash-nav-brand">LearnMate</span>
+                <div class="dash-nav-links">
+                    <a href="{{ url_for('main.dashboard') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        Skill Checklist
+                    </a>
+                    <a href="{{ url_for('main.resume_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Analyze Resume
+                    </a>
+                    <a href="{{ url_for('main.progress_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14l2 2 4-4"/></svg>
+                        Progress Tracker
+                    </a>
+                    <a href="{{ url_for('main.mock_tests_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Mock Test Logbook
+                    </a>
+                    <a href="{{ url_for('main.leaderboard_page') }}" class="dash-nav-link active" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        Leaderboard
+                    </a>
+                </div>
+                <a href="{{ url_for('main.logout') }}" class="dash-nav-logout" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="auth-shell lb-shell">
+
+            <!-- ════ LEFT PANEL ════ -->
+            <section class="auth-left lb-intro">
+                <p class="auth-kicker">Rankings</p>
+                <h1 class="auth-title">Leaderboard</h1>
+                <p class="auth-lead">Compete by staying consistent. Rank is based on your longest daily login streak.</p>
+
+                <!-- Personal stats pills -->
+                <div class="lb-my-stats">
+                    <div class="lb-stat-pill">
+                        <span class="ls-value" data-my-rank>—</span>
+                        <span class="ls-label">My Rank</span>
+                    </div>
+                    <div class="lb-stat-pill">
+                        <span class="ls-value" data-my-best>0</span>
+                        <span class="ls-label">Best Streak</span>
+                    </div>
+                    <div class="lb-stat-pill">
+                        <span class="ls-value" data-my-current>0</span>
+                        <span class="ls-label">Current Streak</span>
+                    </div>
+                    <div class="lb-stat-pill">
+                        <span class="ls-value" data-my-days>0</span>
+                        <span class="ls-label">Active Days</span>
+                    </div>
+                </div>
+
+                <!-- Mock test score trend chart -->
+                <div class="lb-chart-card">
+                    <div class="lb-chart-title">
+                        <span>📊</span> Mock Test Score Trend
+                    </div>
+                    <div class="lb-chart-canvas-wrap">
+                        <canvas id="chartMockTrend"></canvas>
+                    </div>
+                </div>
+
+                <!-- Interview accuracy chart -->
+                <div class="lb-chart-card">
+                    <div class="lb-chart-title">
+                        <span>🎯</span> Questions Solved &amp; Accuracy
+                    </div>
+                    <div class="lb-chart-canvas-wrap">
+                        <canvas id="chartInterview"></canvas>
+                    </div>
+                </div>
+
+                <!-- Login streak history chart -->
+                <div class="lb-chart-card">
+                    <div class="lb-chart-title">
+                        <span>🔥</span> Daily Login Activity (Last 30 Days)
+                    </div>
+                    <div class="lb-chart-canvas-wrap" style="height: 120px;">
+                        <canvas id="chartStreak"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ════ RIGHT: Standings card ════ -->
+            <section class="auth-card lb-standings-card">
+                <div class="lb-card-header">
+                    <div class="lb-header-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                        </svg>
+                    </div>
+                    <div class="lb-header-text">
+                        <p class="card-eyebrow">Global</p>
+                        <h2 class="card-title">Streak Rankings</h2>
+                        <p class="card-subtitle">Ranked by longest consecutive login streak.</p>
+                    </div>
+                </div>
+
+                <!-- Top 3 podium -->
+                <div class="lb-podium" data-podium>
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Ranks 4 and beyond -->
+                <div class="lb-table-wrap">
+                    <table class="lb-standings-table" data-standings-table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Best Streak</th>
+                                <th>Current</th>
+                                <th>Active Days</th>
+                            </tr>
+                        </thead>
+                        <tbody data-standings-body>
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="lb-empty" data-lb-empty hidden>
+                    <div class="empty-icon">🏆</div>
+                    <div class="empty-text">No data yet</div>
+                    <div class="empty-hint">Log in daily to appear on the leaderboard!</div>
+                </div>
+            </section>
+
+            <!-- ════ RIGHT bottom: Accuracy & rank chart ════ -->
+            <section class="auth-card lb-accuracy-card">
+                <div class="lb-card-header">
+                    <div class="lb-header-icon" style="background:rgba(99,230,211,0.1);color:#63e6d3;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div class="lb-header-text">
+                        <p class="card-eyebrow" style="color:#63e6d3;">Performance</p>
+                        <h2 class="card-title">Accuracy Over Time</h2>
+                        <p class="card-subtitle">Mock test accuracy % across all your attempts.</p>
+                    </div>
+                </div>
+                <div class="lb-chart-canvas-wrap" style="height:200px;">
+                    <canvas id="chartAccuracy"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    <script>
+    /* =========================================================================
+       Leaderboard page — JavaScript
+       Fetches /api/leaderboard/full and renders all charts + standings table.
+       Uses Chart.js (loaded from CDN above).
+    ========================================================================= */
+
+    // ── Chart.js global defaults ──────────────────────────────────────────────
+    Chart.defaults.color = 'rgba(255,255,255,0.45)';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.07)';
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+    Chart.defaults.font.size = 11;
+
+    // ── Tiny helper: format a name to initials ────────────────────────────────
+    function initials(name) {
+        return (name || '?')
+            .split(' ')
+            .map(w => w[0])
+            .join('')
+            .slice(0, 2)
+            .toUpperCase();
+    }
+
+    // ── Build the podium (top 3 entries) ────────────────────────────────────────
+    function renderPodium(standings, currentEmail) {
+        const podiumEl = document.querySelector('[data-podium]');
+        const top3 = standings.slice(0, 3);
+        // Arrange as: 2nd | 1st | 3rd  for visual height effect
+        const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+        const displayRanks = [2, 1, 3];
+
+        podiumEl.innerHTML = '';
+        order.forEach((entry, i) => {
+            if (!entry) return;
+            const rank = displayRanks[i];
+            const isMe = entry.email === currentEmail;
+            const crown = rank === 1 ? '<span class="podium-crown">👑</span>' : '';
+            podiumEl.innerHTML += `
+                <div class="podium-slot${isMe ? ' is-me' : ''}" data-rank="${rank}">
+                    <div class="podium-avatar">${crown}${initials(entry.name)}</div>
+                    <div class="podium-name">${entry.name}${isMe ? ' (You)' : ''}</div>
+                    <div class="podium-streak">Best: <strong>${entry.best_streak}d</strong></div>
+                    <div class="podium-bar"></div>
+                </div>`;
+        });
+    }
+
+    // ── Build the table (rank 4 onward) ────────────────────────────────────────
+    function renderTable(standings, currentEmail) {
+        const tbody = document.querySelector('[data-standings-body]');
+        const emptyEl = document.querySelector('[data-lb-empty]');
+        const rest = standings.slice(3);
+
+        if (standings.length === 0) {
+            emptyEl.hidden = false;
+            return;
+        }
+        emptyEl.hidden = true;
+
+        // Also add ranks 1-3 in the table for completeness (below podium)
+        tbody.innerHTML = standings.map(entry => {
+            const isMe = entry.email === currentEmail;
+            const rankClass = entry.rank <= 3 ? `rank-${entry.rank}` : '';
+            return `
+                <tr class="${isMe ? 'is-me' : ''}">
+                    <td><span class="rank-badge ${rankClass}">${entry.rank}</span></td>
+                    <td>${entry.name}${isMe ? ' <span style="color:#FF6B35;font-size:0.7rem;">(You)</span>' : ''}</td>
+                    <td><span class="streak-chip">🔥 ${entry.best_streak}d</span></td>
+                    <td><span class="streak-chip current">${entry.current_streak}d</span></td>
+                    <td><span class="active-chip">📅 ${entry.total_active_days}</span></td>
+                </tr>`;
+        }).join('');
+    }
+
+    // ── Update personal stat pills ──────────────────────────────────────────────
+    function fillMyStats(standings, currentEmail, userStats) {
+        const me = standings.find(e => e.email === currentEmail);
+        document.querySelector('[data-my-rank]').textContent  = me ? `#${me.rank}` : '—';
+        document.querySelector('[data-my-best]').textContent  = me ? me.best_streak : 0;
+        document.querySelector('[data-my-current]').textContent = me ? me.current_streak : 0;
+        document.querySelector('[data-my-days]').textContent  = me ? me.total_active_days : 0;
+    }
+
+    // ── Chart: Mock test score trend ───────────────────────────────────────────
+    function buildMockTrendChart(mockTrend) {
+        const labels = mockTrend.map(r => r.date_taken);
+        const data   = mockTrend.map(r => r.pct);
+        new Chart(document.getElementById('chartMockTrend'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Score %',
+                    data,
+                    borderColor: '#FF6B35',
+                    backgroundColor: 'rgba(255,107,53,0.12)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#FF6B35',
+                    tension: 0.4,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { mode: 'index' } },
+                scales: {
+                    x: { ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 8 } },
+                    y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+    }
+
+    // ── Chart: Interview questions + accuracy ──────────────────────────────────
+    function buildInterviewChart(interviewData) {
+        const trend  = interviewData.trend || [];
+        const labels = trend.map(r => r.session_date);
+        const qData  = trend.map(r => r.day_questions);
+        const aData  = trend.map(r =>
+            r.day_questions > 0
+                ? Math.round((r.day_correct / r.day_questions) * 100)
+                : 0
+        );
+
+        new Chart(document.getElementById('chartInterview'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Questions Solved',
+                        data: qData,
+                        backgroundColor: 'rgba(99,230,211,0.55)',
+                        borderColor: '#63e6d3',
+                        borderWidth: 1,
+                        yAxisID: 'yQ',
+                        order: 2,
+                    },
+                    {
+                        type: 'line',
+                        label: 'Accuracy %',
+                        data: aData,
+                        borderColor: '#ffd700',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        tension: 0.4,
+                        yAxisID: 'yA',
+                        order: 1,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 12 } } },
+                scales: {
+                    yQ: { position: 'left',  beginAtZero: true, ticks: { precision: 0 } },
+                    yA: { position: 'right', min: 0, max: 100, ticks: { callback: v => v + '%' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    }
+
+    // ── Chart: Daily login activity bar (last 30 days) ─────────────────────────
+    function buildStreakChart(standings, currentEmail) {
+        // Build a binary 30-day presence array based on current_streak
+        const me = standings.find(e => e.email === currentEmail);
+        const days = 30;
+        const today = new Date();
+        const labels = [];
+        const data   = [];
+
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+            // Mark the last `current_streak` days as active
+            data.push((i < (me ? me.current_streak : 0)) ? 1 : 0);
+        }
+
+        new Chart(document.getElementById('chartStreak'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Active',
+                    data,
+                    backgroundColor: data.map(v => v ? 'rgba(255,107,53,0.75)' : 'rgba(255,255,255,0.07)'),
+                    borderRadius: 4,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw ? 'Active' : 'Inactive' } } },
+                scales: {
+                    x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 10, font: { size: 9 } } },
+                    y: { display: false, min: 0, max: 1 }
+                }
+            }
+        });
+    }
+
+    // ── Chart: Accuracy trend (right panel) ──────────────────────────────────
+    function buildAccuracyChart(mockTrend) {
+        const labels  = mockTrend.map(r => r.date_taken);
+        const accData = mockTrend.map(r => r.pct);
+
+        new Chart(document.getElementById('chartAccuracy'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Accuracy %',
+                    data: accData,
+                    borderColor: '#63e6d3',
+                    backgroundColor: 'rgba(99,230,211,0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#63e6d3',
+                    tension: 0.45,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { mode: 'index' } },
+                scales: {
+                    x: { ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 8 } },
+                    y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+    }
+
+    // ── Init: fetch data and render everything ─────────────────────────────────
+    async function init() {
+        try {
+            const res  = await fetch('/api/leaderboard/full');
+            const data = await res.json();
+            if (!res.ok) return;
+
+            const { standings, current_user, user_stats } = data;
+
+            renderPodium(standings, current_user);
+            renderTable(standings, current_user);
+            fillMyStats(standings, current_user, user_stats);
+
+            const mockTrend = user_stats.mock_trend || [];
+            const interviewData = user_stats.interview || {};
+
+            if (mockTrend.length) {
+                buildMockTrendChart(mockTrend);
+                buildAccuracyChart(mockTrend);
+            }
+            buildInterviewChart(interviewData);
+            buildStreakChart(standings, current_user);
+
+        } catch (err) {
+            console.error('Leaderboard load error:', err);
+        }
+    }
+
+    init();
+    </script>
+</body>
+</html>

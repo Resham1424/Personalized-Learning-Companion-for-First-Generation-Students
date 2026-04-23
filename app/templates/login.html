@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="page-fade page-fade-ready">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+        <a href="{{ url_for('main.home') }}" class="btn-home">&#8592; Home</a>
+
+        <div class="auth-shell">
+            <section class="auth-left">
+                <p class="auth-kicker">No Guidance? No Problem. We’ve Got You</p>
+                <h1 class="auth-title">Welcome back.<br>Keep the streak alive.</h1>
+                <p class="auth-lead">We make dedication look effortless until you see the sleepless nights behind it.</p>
+                <div class="auth-metrics">
+                    <div class="metric">
+                        <span class="metric-value">AI Driven</span>
+                        <span class="metric-label">Personalized Roadmaps</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">AI Refined</span>
+                        <span class="metric-label">Task Tracker</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="auth-card">
+                <div class="card-header">
+                    <p class="card-eyebrow">Secure access</p>
+                    <h2 class="card-title">Login</h2>
+                    <p class="card-subtitle">Your progress is waiting.</p>
+                </div>
+
+                {% if error %}
+                <div class="form-alert error">{{ error }}</div>
+                {% endif %}
+                {% if success %}
+                <div class="form-alert success">{{ success }}</div>
+                {% endif %}
+
+                <form class="auth-form" id="loginForm" method="post" action="{{ url_for('main.login') }}">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="{{ url_for('main.forgot_password') }}" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Login</button>
+                </form>
+
+                <p class="auth-switch">Don't have an account? <a href="{{ url_for('main.register') }}">Register</a></p>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+</body>
+</html>

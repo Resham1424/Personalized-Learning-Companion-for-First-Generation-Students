@@ -1,0 +1,304 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Leaderboard page – LearnMate
+   Theme: #0b0b0b bg  |  #FF6B35 accent  |  #63e6d3 teal  |  #ffd700 gold
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Page shell ─────────────────────────────────────────────────────────────── */
+.lb-shell {
+    position: relative !important;
+    z-index: 2 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1.4fr !important;
+    grid-template-rows: auto auto !important;
+    align-items: start !important;
+    gap: 28px !important;
+    padding: 72px 5vw 6vh !important;
+    min-height: 100vh !important;
+    height: auto !important;
+}
+
+/* ── Left intro panel ───────────────────────────────────────────────────────── */
+.lb-intro {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: none !important;
+}
+
+.lb-intro .auth-title { font-size: 2.5rem; margin-bottom: 4px; }
+.lb-intro .auth-lead  { margin-bottom: 6px; }
+
+/* ── Personal stat pills (top of left) ─────────────────────────────────────── */
+.lb-my-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.lb-stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 16px 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+}
+.lb-stat-pill:hover { background: rgba(255,255,255,0.07); transform: translateY(-3px); }
+.lb-stat-pill:nth-child(1) { border-left: 3px solid #FF6B35; }
+.lb-stat-pill:nth-child(2) { border-left: 3px solid #ffd700; }
+.lb-stat-pill:nth-child(3) { border-left: 3px solid #63e6d3; }
+.lb-stat-pill:nth-child(4) { border-left: 3px solid #a78bfa; }
+
+.ls-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+.ls-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.45);
+}
+
+/* ── Chart cards (left panel) ───────────────────────────────────────────────── */
+.lb-chart-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lb-chart-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.75);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.lb-chart-title span { font-size: 1.1rem; }
+
+.lb-chart-canvas-wrap { position: relative; height: 180px; width: 100%; }
+.lb-chart-canvas-wrap canvas { width: 100% !important; height: 100% !important; }
+
+/* ── Right: Standings card ──────────────────────────────────────────────────── */
+.lb-standings-card {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+/* ── Right: Accuracy chart card ─────────────────────────────────────────────── */
+.lb-accuracy-card {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 20px 24px;
+}
+
+/* ── Podium (top 3) ─────────────────────────────────────────────────────────── */
+.lb-podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 16px 0 24px;
+}
+
+.podium-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.podium-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+}
+.podium-slot[data-rank="1"] .podium-avatar {
+    width: 64px; height: 64px; font-size: 1.6rem;
+    border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.35);
+}
+.podium-slot[data-rank="2"] .podium-avatar { border-color: #c0c0c0; }
+.podium-slot[data-rank="3"] .podium-avatar { border-color: #cd7f32; }
+
+.podium-crown {
+    position: absolute;
+    top: -14px;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.podium-name {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    max-width: 80px;
+    text-align: center;
+    word-break: break-word;
+}
+.podium-streak {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+}
+.podium-streak strong { color: #ffd700; font-weight: 700; }
+
+.podium-bar {
+    width: 48px;
+    border-radius: 6px 6px 0 0;
+    opacity: 0.7;
+}
+.podium-slot[data-rank="1"] .podium-bar { height: 64px; background: #ffd700; opacity: 0.9; }
+.podium-slot[data-rank="2"] .podium-bar { height: 48px; background: #c0c0c0; }
+.podium-slot[data-rank="3"] .podium-bar { height: 36px; background: #cd7f32; }
+
+/* ── Standings table ────────────────────────────────────────────────────────── */
+.lb-table-wrap { overflow-x: auto; }
+
+.lb-standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+}
+
+.lb-standings-table th {
+    padding: 8px 12px;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.67rem;
+    color: rgba(255,255,255,0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.lb-standings-table td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.75);
+}
+
+.lb-standings-table tr:last-child td { border-bottom: none; }
+
+.lb-standings-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+/* Highlight current user row */
+.lb-standings-table tr.is-me td { background: rgba(255,107,53,0.08); }
+.lb-standings-table tr.is-me td:first-child { border-left: 3px solid #FF6B35; }
+
+/* Rank badge */
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.6);
+}
+.rank-badge.rank-1 { background: rgba(255,215,0,0.2);  color: #ffd700; }
+.rank-badge.rank-2 { background: rgba(192,192,192,0.2); color: #c0c0c0; }
+.rank-badge.rank-3 { background: rgba(205,127,50,0.2);  color: #cd7f32; }
+
+/* Streak chip */
+.streak-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255,215,0,0.12);
+    color: #ffd700;
+}
+.streak-chip.current { background: rgba(255,107,53,0.15); color: #FF6B35; }
+
+/* Active-days chip */
+.active-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(99,230,211,0.12);
+    color: #63e6d3;
+}
+
+/* ── Empty state ────────────────────────────────────────────────────────────── */
+.lb-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.65);
+}
+.lb-empty .empty-icon { font-size: 2.4rem; }
+.lb-empty .empty-text { font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.80); }
+.lb-empty .empty-hint { font-size: 0.78rem; }
+
+/* ── Card header reuse ──────────────────────────────────────────────────────── */
+.lb-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.lb-header-icon {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    background: rgba(255,107,53,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: #FF6B35;
+    flex-shrink: 0;
+}
+.lb-header-text .card-eyebrow { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px; color: #FF6B35; margin-bottom: 2px; }
+.lb-header-text .card-title   { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0; }
+.lb-header-text .card-subtitle{ font-size: 0.8rem; color: rgba(255,255,255,0.70); margin-top: 3px; }
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+    .lb-shell {
+        grid-template-columns: 1fr !important;
+        padding: 64px 4vw 5vh !important;
+    }
+    .lb-intro  { grid-column: 1; grid-row: auto; }
+    .lb-standings-card { grid-column: 1; grid-row: auto; }
+    .lb-accuracy-card  { grid-column: 1; grid-row: auto; }
+    .lb-my-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+    .lb-my-stats { grid-template-columns: 1fr 1fr; }
+    .lb-podium   { gap: 10px; }
+}

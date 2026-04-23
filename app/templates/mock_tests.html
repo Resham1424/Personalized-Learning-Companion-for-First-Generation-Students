@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Test Logbook - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="page-fade page-fade-ready dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+
+        <!-- ═══ NAVBAR ═══ -->
+        <nav class="dash-navbar">
+            <div class="dash-navbar-inner">
+                <span class="dash-nav-brand">LearnMate</span>
+                <div class="dash-nav-links">
+                    <a href="{{ url_for('main.dashboard') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        Skill Checklist
+                    </a>
+                    <a href="{{ url_for('main.resume_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Analyze Resume
+                    </a>
+                    <a href="{{ url_for('main.progress_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14l2 2 4-4"/></svg>
+                        Progress Tracker
+                    </a>
+                    <a href="{{ url_for('main.mock_tests_page') }}" class="dash-nav-link active" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><polyline points="10,9 9,9 8,9"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Mock Test Logbook
+                    </a>
+                    <a href="{{ url_for('main.leaderboard_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        Leaderboard
+                    </a>
+                </div>
+                <a href="{{ url_for('main.logout') }}" class="dash-nav-logout" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="auth-shell mocktest-shell">
+            <section class="auth-card mocktest-card">
+                <div class="card-header mocktest-header">
+                    <div class="header-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14,2 14,8 20,8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10,9 9,9 8,9"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <p class="card-eyebrow">Your journey</p>
+                        <h2 class="card-title">Mock test logbook</h2>
+                        <p class="card-subtitle">Every attempt counts. Track your progress and celebrate small wins.</p>
+                    </div>
+                </div>
+
+                <div class="mocktest-grid">
+                    <form class="mocktest-form" data-mock-form>
+                        <div class="form-alert" data-mock-alert hidden></div>
+                        <input type="hidden" name="test_id" data-mock-id>
+                        <div class="form-group">
+                            <label for="test-name">Test name</label>
+                            <input id="test-name" name="test_name" type="text" placeholder="Aptitude sprint #3" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="test-source">Source</label>
+                            <input id="test-source" name="source" type="text" placeholder="HackerRank / PrepInsta" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="test-score">Score</label>
+                                <input id="test-score" name="score" type="number" min="0" step="0.01" placeholder="72" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="test-max">Max score</label>
+                                <input id="test-max" name="max_score" type="number" min="1" step="0.01" placeholder="100" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="test-date">Date taken</label>
+                            <input id="test-date" name="date_taken" type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="test-notes">Quick notes</label>
+                            <textarea id="test-notes" name="notes" rows="2" placeholder="Topics to revisit, time mgmt, etc."></textarea>
+                        </div>
+                        <div class="mocktest-actions">
+                            <button class="btn-submit mock-submit" type="submit" data-submit-label>Save mock test</button>
+                            <button class="btn-ghost btn-mini" type="button" data-cancel-edit hidden>Cancel edit</button>
+                        </div>
+                    </form>
+
+                    <div class="mocktest-visuals">
+                        <div class="mocktest-stats">
+                            <div class="stat-card stat-average">
+                                <div class="stat-icon">⚡</div>
+                                <div class="stat-content">
+                                    <span class="stat-value" data-mock-average>0%</span>
+                                    <span class="stat-label">Average score</span>
+                                </div>
+                            </div>
+                            <div class="stat-card stat-best">
+                                <div class="stat-icon">🏆</div>
+                                <div class="stat-content">
+                                    <span class="stat-value" data-mock-best>0%</span>
+                                    <span class="stat-label">Personal best</span>
+                                </div>
+                            </div>
+                            <div class="stat-card stat-count">
+                                <div class="stat-icon">✨</div>
+                                <div class="stat-content">
+                                    <span class="stat-value" data-mock-count>0</span>
+                                    <span class="stat-label">Tests taken</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card trend-card">
+                            <div class="chart-header">
+                                <div class="chart-title-group">
+                                    <span class="chart-icon">📈</span>
+                                    <span>Your growth story</span>
+                                </div>
+                                <span class="chart-meta" data-mock-range>Last 8 tests</span>
+                            </div>
+                            <svg class="chart-svg" data-line-chart viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet"></svg>
+                            <div class="chart-insight" data-trend-insight>Keep going - consistency is key!</div>
+                        </div>
+
+                        <div class="chart-card performance-card">
+                            <div class="chart-header">
+                                <div class="chart-title-group">
+                                    <span class="chart-icon">🎯</span>
+                                    <span>Recent sessions</span>
+                                </div>
+                                <span class="chart-meta" data-mock-latest>0%</span>
+                            </div>
+                            <svg class="chart-svg" data-bar-chart viewBox="0 0 320 120" preserveAspectRatio="xMidYMid meet"></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mocktest-log">
+                    <div class="log-header">
+                        <h3 class="log-title">📋 Your test history</h3>
+                        <span class="log-hint">Click any entry to update it</span>
+                    </div>
+                    <div class="mocktest-log-list" data-mock-list></div>
+                    <div class="mocktest-empty" data-mock-empty hidden>
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-text">No tests recorded yet</div>
+                        <div class="empty-hint">Add your first mock test above to start tracking your journey!</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/mock-tests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+</body>
+</html>

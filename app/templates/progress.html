@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracker - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/progress.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+</head>
+<body class="page-fade page-fade-ready dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+        <div class="auth-brand">LearnMate</div>
+
+        <!-- ═══ NAVBAR ═══ -->
+        <nav class="dash-navbar">
+            <div class="dash-navbar-inner">
+                <span class="dash-nav-brand">LearnMate</span>
+                <div class="dash-nav-links">
+                    <a href="{{ url_for('main.dashboard') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        Skill Checklist
+                    </a>
+                    <a href="{{ url_for('main.resume_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Analyze Resume
+                    </a>
+                    <a href="{{ url_for('main.progress_page') }}" class="dash-nav-link active" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14l2 2 4-4"/></svg>
+                        Progress Tracker
+                    </a>
+                    <a href="{{ url_for('main.mock_tests_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><polyline points="10,9 9,9 8,9"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Mock Test Logbook
+                    </a>
+                    <a href="{{ url_for('main.leaderboard_page') }}" class="dash-nav-link" data-nav-link>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        Leaderboard
+                    </a>
+                </div>
+                <a href="{{ url_for('main.logout') }}" class="dash-nav-logout" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="auth-shell progress-shell">
+            <!-- Left intro panel -->
+            <section class="auth-left progress-intro">
+                <p class="auth-kicker">Daily Discipline</p>
+                <h1 class="auth-title">Progress Tracker</h1>
+                <p class="auth-lead">Build consistency with daily habits. Track protocols, visualize streaks, and watch your discipline score grow.</p>
+
+                <!-- Quick stats row -->
+                <div class="progress-quick-stats">
+                    <div class="pq-stat">
+                        <span class="pq-value" data-total-habits>0</span>
+                        <span class="pq-label">Habits</span>
+                    </div>
+                    <div class="pq-stat">
+                        <span class="pq-value" data-today-done>0</span>
+                        <span class="pq-label">Done today</span>
+                    </div>
+                    <div class="pq-stat">
+                        <span class="pq-value" data-streak-best>0</span>
+                        <span class="pq-label">Best streak</span>
+                    </div>
+                </div>
+
+                <!-- Score graph card -->
+                <div class="score-graph-card">
+                    <div class="score-graph-header">
+                        <div class="chart-title-group">
+                            <span class="chart-icon"></span>
+                            <span>Daily Score Graph</span>
+                        </div>
+                        <span class="chart-meta" data-score-month>This month</span>
+                    </div>
+                    <div class="score-graph-body">
+                        <svg class="score-chart-svg" data-score-chart viewBox="0 0 620 200" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+                    <div class="score-graph-legend">
+                        <span class="legend-dot"></span>
+                        <span>Habits completed per day</span>
+                    </div>
+                </div>
+
+                <!-- ── Chart.js: Mock test score trend ──────────────────── -->
+                <div class="score-graph-card ppc-chart-card" style="margin-top:0;">
+                    <div class="score-graph-header">
+                        <div class="chart-title-group">
+                            <span class="chart-icon">📊</span>
+                            <span>Mock Test Score Trend</span>
+                        </div>
+                        <button class="ppc-refresh-btn" data-refresh="mock" title="Refresh">↻</button>
+                    </div>
+                    <div class="ppc-canvas-wrap">
+                        <canvas id="progressMockChart"></canvas>
+                        <div class="ppc-nodata" id="progressMockNoData">No mock test data yet.<br><span>Log tests in Mock Test Logbook to see trends.</span></div>
+                    </div>
+                </div>
+
+                <!-- ── Chart.js: Questions solved & accuracy ─────────────── -->
+                <div class="score-graph-card ppc-chart-card" style="margin-top:0;">
+                    <div class="score-graph-header">
+                        <div class="chart-title-group">
+                            <span class="chart-icon">🎯</span>
+                            <span>Questions Solved &amp; Accuracy</span>
+                        </div>
+                        <button class="ppc-refresh-btn" data-refresh="interview" title="Refresh">↻</button>
+                    </div>
+                    <div class="ppc-canvas-wrap">
+                        <canvas id="progressInterviewChart"></canvas>
+                        <div class="ppc-nodata" id="progressInterviewNoData">No interview session data yet.<br><span>Submit sessions via the API to see accuracy.</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Habit tracker card -->
+            <section class="auth-card progress-card">
+                <div class="card-header progress-header">
+                    <div class="header-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                            <path d="M8 14l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <p class="card-eyebrow">Monthly view</p>
+                        <h2 class="card-title">Habit Tracker</h2>
+                        <p class="card-subtitle">Check off habits daily and build your streaks.</p>
+                    </div>
+                </div>
+
+                <!-- Month navigation -->
+                <div class="month-nav">
+                    <button class="month-btn" data-month-prev>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+                    </button>
+                    <span class="month-label" data-month-label>February 2026</span>
+                    <button class="month-btn" data-month-next>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+                    </button>
+                </div>
+
+                <!-- Add habit form -->
+                <div class="add-habit-row">
+                    <input type="text" class="habit-input" data-habit-name placeholder="New habit (e.g. DSA practice)" maxlength="60">
+                    <input type="color" class="habit-color-picker" data-habit-color value="#FF6B35" title="Pick color">
+                    <button class="btn-add-habit" data-add-habit>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add
+                    </button>
+                </div>
+
+                <!-- Habit grid (scrollable) -->
+                <div class="habit-grid-wrapper">
+                    <div class="habit-grid" data-habit-grid>
+                        <!-- Header row: days -->
+                        <div class="hg-corner">Habits / Protocols</div>
+                        <!-- Day headers and habit rows rendered by JS -->
+                    </div>
+                    <div class="habit-empty" data-habit-empty>
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-text">No habits yet</div>
+                        <div class="empty-hint">Add your first daily habit above to start tracking!</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leaderboard section (full-width below) -->
+            <section class="auth-card leaderboard-card">
+                <div class="card-header leaderboard-header-section">
+                    <div class="header-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <p class="card-eyebrow">Community</p>
+                        <h2 class="card-title">Streak Leaderboard</h2>
+                        <p class="card-subtitle">Compete with peers. Build the longest streak and climb the ranks.</p>
+                    </div>
+                </div>
+
+                <!-- Podium: Top 3 -->
+                <div class="lb-podium" data-lb-podium>
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Table: Ranks 4+ -->
+                <div class="lb-table-wrapper">
+                    <div class="lb-table-header">
+                        <span class="lb-col-rank">Rank</span>
+                        <span class="lb-col-name">Name</span>
+                        <span class="lb-col-current">Current Streak</span>
+                        <span class="lb-col-best">Max Streak</span>
+                        <span class="lb-col-habits">Habits</span>
+                    </div>
+                    <div class="lb-table-body" data-lb-table>
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <div class="lb-empty" data-lb-empty hidden>
+                    <div class="empty-icon">🏆</div>
+                    <div class="empty-text">No streaks yet</div>
+                    <div class="empty-hint">Complete habits daily to appear on the leaderboard!</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="preppulse-badge">
+            <span class="live-indicator"></span>
+            <span class="badge-text">LearnMate</span>
+        </div>
+    </main>
+
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/progress-tracker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    <script>
+    /* ── Progress page Chart.js charts ─────────────────────────────────────────
+       Both charts are always initialised. When there is no data the canvas is
+       hidden and a styled placeholder message is shown instead.
+       Charts are destroyed and recreated on refresh so Chart.js never reuses a
+       stale canvas context.
+    ─────────────────────────────────────────────────────────────────────────── */
+
+    // Apply global Chart.js theme defaults once
+    Chart.defaults.color          = 'rgba(255,255,255,0.45)';
+    Chart.defaults.borderColor    = 'rgba(255,255,255,0.08)';
+    Chart.defaults.font.family    = "'Inter','Segoe UI',sans-serif";
+    Chart.defaults.font.size      = 11;
+    Chart.defaults.animation.duration = 500;
+
+    // Keep references so we can destroy before redrawing
+    let _mockChartInst      = null;
+    let _interviewChartInst = null;
+
+    // ── Helper: show or hide the no-data overlay for a chart ────────────────
+    function setNoData(canvasId, noDataId, hasData) {
+        const canvas  = document.getElementById(canvasId);
+        const overlay = document.getElementById(noDataId);
+        if (!canvas || !overlay) return;
+        canvas.style.display  = hasData ? 'block' : 'none';
+        overlay.style.display = hasData ? 'none'  : 'flex';
+    }
+
+    // ── Build / rebuild the mock test score chart ────────────────────────────
+    function buildMockChart(mockTrend) {
+        // Destroy previous instance so Chart.js releases the canvas
+        if (_mockChartInst) { _mockChartInst.destroy(); _mockChartInst = null; }
+
+        const hasData = Array.isArray(mockTrend) && mockTrend.length > 0;
+        setNoData('progressMockChart', 'progressMockNoData', hasData);
+        if (!hasData) return;
+
+        const labels = mockTrend.map(r => r.date_taken);
+        const scores = mockTrend.map(r => Number(r.pct));
+
+        _mockChartInst = new Chart(document.getElementById('progressMockChart'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Score %',
+                    data: scores,
+                    borderColor: '#FF6B35',
+                    backgroundColor: 'rgba(255,107,53,0.12)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#FF6B35',
+                    tension: 0.4,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,15,15,0.9)',
+                        borderColor: 'rgba(255,107,53,0.4)',
+                        borderWidth: 1,
+                        callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}%` }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { maxRotation: 40, autoSkip: true, maxTicksLimit: 8 }
+                    },
+                    y: {
+                        min: 0, max: 100,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { callback: v => v + '%', stepSize: 20 }
+                    }
+                }
+            }
+        });
+    }
+
+    // ── Build / rebuild the interview questions + accuracy chart ────────────
+    function buildInterviewChart(interviewData) {
+        if (_interviewChartInst) { _interviewChartInst.destroy(); _interviewChartInst = null; }
+
+        const trend   = (interviewData && interviewData.trend) ? interviewData.trend : [];
+        const hasData = trend.length > 0;
+        setNoData('progressInterviewChart', 'progressInterviewNoData', hasData);
+        if (!hasData) return;
+
+        const labels   = trend.map(r => r.session_date);
+        const qData    = trend.map(r => Number(r.day_questions));
+        const accData  = trend.map(r =>
+            r.day_questions > 0
+                ? Math.round((r.day_correct / r.day_questions) * 100)
+                : 0
+        );
+
+        _interviewChartInst = new Chart(document.getElementById('progressInterviewChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Questions Solved',
+                        data: qData,
+                        backgroundColor: 'rgba(99,230,211,0.5)',
+                        borderColor: '#63e6d3',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        yAxisID: 'yQ',
+                        order: 2,
+                    },
+                    {
+                        type: 'line',
+                        label: 'Accuracy %',
+                        data: accData,
+                        borderColor: '#ffd700',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#ffd700',
+                        tension: 0.4,
+                        yAxisID: 'yA',
+                        order: 1,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 10, padding: 12, color: 'rgba(255,255,255,0.6)' }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,15,15,0.9)',
+                        borderColor: 'rgba(99,230,211,0.4)',
+                        borderWidth: 1,
+                    }
+                },
+                scales: {
+                    yQ: {
+                        position: 'left',
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { precision: 0 }
+                    },
+                    yA: {
+                        position: 'right',
+                        min: 0, max: 100,
+                        grid: { drawOnChartArea: false },
+                        ticks: { callback: v => v + '%' }
+                    }
+                }
+            }
+        });
+    }
+
+    // ── Fetch stats and render / refresh both charts ─────────────────────────
+    async function loadProgressCharts() {
+        try {
+            const res = await fetch('/api/stats/me');
+            if (!res.ok) throw new Error('API error ' + res.status);
+            const data = await res.json();
+
+            buildMockChart(data.mock_trend || []);
+            buildInterviewChart(data.interview || {});
+        } catch (err) {
+            console.warn('Progress charts load error:', err);
+            // Show no-data state on failure
+            setNoData('progressMockChart',      'progressMockNoData',      false);
+            setNoData('progressInterviewChart', 'progressInterviewNoData', false);
+        }
+    }
+
+    // ── Responsive: redraw on window resize (debounced) ─────────────────────
+    // Chart.js handles resize internally when responsive:true, but we need
+    // the parent container to NOT have overflow:hidden clipping the canvas.
+    // The ppc-chart-card CSS class removes overflow:hidden from score-graph-card.
+    let _resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(_resizeTimer);
+        _resizeTimer = setTimeout(() => {
+            if (_mockChartInst)      _mockChartInst.resize();
+            if (_interviewChartInst) _interviewChartInst.resize();
+        }, 150);
+    });
+
+    // ── Refresh buttons ──────────────────────────────────────────────────────
+    document.querySelectorAll('[data-refresh]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.add('spinning');
+            loadProgressCharts().finally(() => btn.classList.remove('spinning'));
+        });
+    });
+
+    // ── Initial load ─────────────────────────────────────────────────────────
+    // Wait for DOM to be completely ready (charts need rendered canvas elements)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadProgressCharts);
+    } else {
+        loadProgressCharts();
+    }
+    </script>
+</body>
+</html>

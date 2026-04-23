@@ -1,0 +1,4 @@
+This is a Hackathon Project, Smooth and User Interactive UI and UX are very important.
+UX Must be excellent
+Make features with atmost priority.
+Understand the Code, then make changes.

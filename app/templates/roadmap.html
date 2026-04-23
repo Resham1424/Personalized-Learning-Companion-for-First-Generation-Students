@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Roadmap - LearnMate</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/roadmap.css') }}">
+</head>
+<body class="page-fade page-fade-ready dashboard-page">
+    <main class="auth-page">
+        <spline-viewer url="https://prod.spline.design/fXcrKO8RVlhTuX6A/scene.splinecode"></spline-viewer>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+
+        {# Include shared sidebar component #}
+        {% set active_page = 'roadmap' %}
+        {% include '_sidebar.html' %}
+
+        <!-- ═══ MAIN CONTENT ═══ -->
+        <div class="roadmap-content">
+
+            <!-- ── SETUP VIEW ─────────────────────────────────────── -->
+            <section class="roadmap-setup" id="roadmapSetup">
+                <div class="setup-header">
+                    <h1 class="setup-title">Personalized Study Roadmap</h1>
+                    <p class="setup-subtitle">Tell us about your goals and we'll create a tailored step-by-step preparation plan.</p>
+                </div>
+
+                <form class="setup-form" id="roadmapForm">
+                    <!-- Branch -->
+                    <div class="form-group">
+                        <label class="form-label">Your Branch / Department</label>
+                        <div class="option-grid" id="branchGrid">
+                            <!-- populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Company Type -->
+                    <div class="form-group">
+                        <label class="form-label">Target Company Type</label>
+                        <div class="option-grid" id="companyTypeGrid">
+                            <!-- populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Preparation Level -->
+                    <div class="form-group">
+                        <label class="form-label">Your Current Preparation Level</label>
+                        <div class="option-grid" id="levelGrid">
+                            <!-- populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Target Company (optional) -->
+                    <div class="form-group">
+                        <label class="form-label">Target Company <span class="optional-tag">(optional)</span></label>
+                        <select class="form-select" id="targetCompany">
+                            <option value="">-- No specific company --</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-generate" id="btnGenerate">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Generate My Roadmap
+                    </button>
+                </form>
+            </section>
+
+            <!-- ── ROADMAP VIEW ───────────────────────────────────── -->
+            <section class="roadmap-view" id="roadmapView" style="display:none">
+
+                <!-- Top Bar: title + meta tags + back button -->
+                <div class="roadmap-top-bar">
+                    <div>
+                        <h2 class="rtb-title">Your Study Roadmap</h2>
+                        <div class="rtb-meta">
+                            <span class="rtb-tag" id="tagBranch"></span>
+                            <span class="rtb-tag" id="tagType"></span>
+                            <span class="rtb-tag" id="tagLevel"></span>
+                            <span class="rtb-tag" id="tagCompany" style="display:none"></span>
+                        </div>
+                    </div>
+                    <button class="btn-icon" id="btnBackSetup" title="Change settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="roadmap-progress-bar">
+                    <div class="rpb-stats">
+                        <div class="rpb-stat"><span class="rpb-number" id="statCompleted">0</span><span class="rpb-label">Completed</span></div>
+                        <div class="rpb-stat"><span class="rpb-number" id="statInProgress">0</span><span class="rpb-label">In Progress</span></div>
+                        <div class="rpb-stat"><span class="rpb-number" id="statRemaining">0</span><span class="rpb-label">Remaining</span></div>
+                        <div class="rpb-stat rpb-readiness"><span class="rpb-number" id="readinessScore">—</span><span class="rpb-label">Readiness</span></div>
+                    </div>
+                    <div class="rpb-track"><div class="rpb-fill" id="progressFill" style="width:0%"></div></div>
+                </div>
+
+                <!-- Milestones -->
+                <div class="milestones-row" id="milestonesRow"></div>
+
+                <!-- Timeline -->
+                <div class="roadmap-timeline" id="roadmapTimeline"></div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <script type="module" src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/roadmap.js') }}"></script>
+    <script>
+        // Mobile sidebar toggle (same as dashboard)
+        (function () {
+            const toggle  = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('dashSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (!toggle) return;
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            });
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            });
+        })();
+    </script>
+</body>
+</html>
